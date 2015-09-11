@@ -9,14 +9,14 @@ CORE=main.o cookies.o
 MILK=milk.o
 TOPING=toping.o
 
+# common compile options
+LIB=#-lrt #libraries
+CC=gcc #compiler
+CFLAGS=$(DVAR) -g #compiler options
+
 # objects and dependencies directories
 DEPD=dep
 OBJD=obj
-
-# common compile options
-LIB=#-lrt
-CC=gcc
-CFLAGS=$(DVAR) -g
 
 # object list construction
 OBJ_=$(CORE)
@@ -39,12 +39,13 @@ $(OBJD)/%.o: %.c
 # clean rule
 .PHONY: clean
 clean:
-	rm -f iWalker $(OBJD)/*.o $(DEPD)/*.d
+	rm -f $(NAME) $(OBJD)/*.o $(DEPD)/*.d
 
 # dependency generation
 $(DEPD)/%.d: %.c
 	@set -e; rm -f $@; echo "rebuilding dependencies of $< ($@)";\
         $(CC) -MT "$(OBJD)/$*.o $(DEPD)/$*.d" -MM $(CFLAGS) $< -MF $@
 
-include $(patsubst %.o,$(DEPD)/%.d,$(OBJ_))
+DEPF=$(patsubst %.o,$(DEPD)/%.d,$(OBJ_))
+include $(DEPF)
 
